@@ -1,36 +1,30 @@
-/**
- * This is a Next.js page.
- */
-import { trpc } from '../utils/trpc';
+import { useState } from "react";
+import tw from "twin.macro";
+import { trpc } from "../utils/trpc";
+
+const Wrapper = tw.div`w-screen h-screen flex flex-col justify-center items-center`;
+
+const Input = tw.input`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5`;
 
 export default function IndexPage() {
-  // 💡 Tip: CMD+Click (or CTRL+Click) on `greeting` to go to the server definition
-  const result = trpc.greeting.useQuery({ name: 'client' });
+  const [inputValue, setInputValue] = useState("");
 
-  if (!result.data) {
-    return (
-      <div style={styles}>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
+  const airportResult = trpc.getAirport.useQuery({ code: inputValue });
+
   return (
-    <div style={styles}>
-      {/**
-       * The type is defined and can be autocompleted
-       * 💡 Tip: Hover over `data` to see the result type
-       * 💡 Tip: CMD+Click (or CTRL+Click) on `text` to go to the server definition
-       * 💡 Tip: Secondary click on `text` and "Rename Symbol" to rename it both on the client & server
-       */}
-      <h1>{result.data.text}</h1>
-    </div>
+    <Wrapper>
+      <Input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+
+      {airportResult.data ? (
+        <p tw="font-sans">
+          {JSON.stringify(airportResult.data ?? "", null, 2)}
+        </p>
+      ) : (
+        <h1>Loading...</h1>
+      )}
+    </Wrapper>
   );
 }
-
-const styles = {
-  width: '100vw',
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
