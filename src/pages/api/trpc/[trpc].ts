@@ -4,7 +4,11 @@
  */
 import * as trpcNext from "@trpc/server/adapters/next";
 import { z } from "zod";
-import { getAirportByCode } from "~/server/db/airport";
+import {
+  BBoxSchema,
+  getAirportByCode,
+  getAirportsByBbox,
+} from "~/server/db/airport";
 import { publicProcedure, router } from "~/server/trpc";
 import { createContext } from "~/server/trpc/trpc-context";
 
@@ -27,6 +31,15 @@ const appRouter = router({
   getAirport: publicProcedure
     .input(z.object({ code: z.string() }))
     .query(({ input, ctx }) => getAirportByCode(input.code, ctx.db)),
+  getAiportsInBBox: publicProcedure
+    .input(
+      z.object({
+        bbox: BBoxSchema,
+      })
+    )
+    .query(({ input, ctx }) => {
+      return getAirportsByBbox(input.bbox, ctx.db);
+    }),
 });
 
 // export only the type definition of the API

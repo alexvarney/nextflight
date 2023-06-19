@@ -1,4 +1,5 @@
 import type { Database } from "better-sqlite3";
+import { z } from "zod";
 
 const MOCK_AIRPORT: Airport = {
   airport_id: 1507,
@@ -17,49 +18,59 @@ const MOCK_AIRPORT: Airport = {
   laty: 43.46077346801758,
 };
 
-export interface Airport {
-  airport_id: number;
-  file_id: number;
-  ident: string;
-  iata: string;
-  name: string;
-  country: string;
-  region: string;
-  left_lonx: number;
-  top_laty: number;
-  right_lonx: number;
-  bottom_laty: number;
-  altitude: number;
-  lonx: number;
-  laty: number;
-}
+const AirportSchema = z.object({
+  airport_id: z.number(),
+  file_id: z.number(),
+  ident: z.string(),
+  iata: z.optional(z.string()).nullable(),
+  name: z.string(),
+  country: z.string(),
+  region: z.string(),
+  left_lonx: z.number(),
+  top_laty: z.number(),
+  right_lonx: z.number(),
+  bottom_laty: z.number(),
+  altitude: z.number(),
+  lonx: z.number(),
+  laty: z.number(),
+});
 
-type AirportKey = keyof Airport;
+const AirportArray = z.array(AirportSchema);
 
-const filterKeys = <T extends Airport>(obj: T): Airport => {
-  const allowedKeys = new Set(Object.keys(MOCK_AIRPORT));
-
-  const isAllowedKey = (arg: string): arg is AirportKey => {
-    return allowedKeys.has(arg);
-  };
-
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (isAllowedKey(key)) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {} as Partial<Airport>) as Airport;
-};
+export type Airport = z.infer<typeof AirportSchema>;
 
 export const getAirportByCode = (
   code: string,
   db: Database
 ): Airport | null => {
-  const query = `SELECT * FROM airport WHERE ident = ? LIMIT 1;`;
+  const query = `SELECT * FROM airport WHERE lower(ident) = ? LIMIT 1;`;
 
-  const row = db.prepare(query).get(code) as Airport | null;
+  const row = db.prepare(query).get(code.toLowerCase()) as Airport | null;
 
   if (!row) return null;
 
-  return filterKeys(row);
+  const parsed = AirportSchema.parse(row);
+
+  return parsed;
+};
+
+/**
+ *  BBox extent in minX, minY, maxX, maxY order
+ */
+export const BBoxSchema = z.number().array().length(4);
+export type BBox = z.infer<typeof BBoxSchema>;
+
+export const getAirportsByBbox = (bbox: BBox, db: Database) => {
+  const [minX, minY, maxX, maxY] = bbox;
+
+  const query = db.prepare(`SELECT * FROM airport_rtree
+    RIGHT JOIN airport ON airport_rtree.id = airport.airport_id
+    WHERE minX > ?
+    AND maxX < ?
+    AND minY > ?
+    AND maxY < ?`);
+
+  const results = query.all([minX, maxX, minY, maxY]);
+
+  return AirportArray.parse(results);
 };
