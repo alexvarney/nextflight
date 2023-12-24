@@ -16,6 +16,10 @@ const MOCK_AIRPORT: Airport = {
   altitude: 1054,
   lonx: -80.37870788574219,
   laty: 43.46077346801758,
+  rating: 1,
+  longest_runway_length: 7003,
+  size: "medium",
+  tower_frequency: 118500,
 };
 
 const AirportSchema = z.object({
@@ -33,6 +37,10 @@ const AirportSchema = z.object({
   altitude: z.number(),
   lonx: z.number(),
   laty: z.number(),
+  rating: z.number(),
+  longest_runway_length: z.number(),
+  size: z.optional(z.number()),
+  tower_frequency: z.nullable(z.number()),
 });
 
 const AirportArray = z.array(AirportSchema);
@@ -63,12 +71,28 @@ export type BBox = z.infer<typeof BBoxSchema>;
 export const getAirportsByBbox = (bbox: BBox, db: Database) => {
   const [minX, minY, maxX, maxY] = bbox;
 
-  const query = db.prepare(`SELECT * FROM airport_rtree
-    RIGHT JOIN airport ON airport_rtree.id = airport.airport_id
-    WHERE minX > ?
-    AND maxX < ?
-    AND minY > ?
-    AND maxY < ?`);
+  const query = db.prepare(`
+    SELECT 
+      *,
+      CASE 
+        WHEN l.airport_id IS NOT NULL THEN 2
+        WHEN m.airport_id IS NOT NULL THEN 1
+        ELSE 0
+      END AS size
+      FROM airport_rtree
+        LEFT JOIN 
+          airport_large l ON airport_rtree.id = l.airport_id
+        LEFT JOIN 
+          airport_medium m ON airport_rtree.id = m.airport_id
+        RIGHT JOIN 
+          airport ON airport_rtree.id = airport.airport_id
+      WHERE minX > ?
+        AND maxX < ?
+        AND minY > ?
+        AND maxY < ?
+      ORDER BY size DESC, longest_runway_length DESC
+      LIMIT 250
+`);
 
   const results = query.all([minX, maxX, minY, maxY]);
 

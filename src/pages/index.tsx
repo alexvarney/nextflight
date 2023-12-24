@@ -1,57 +1,45 @@
-import * as Turf from "@turf/turf";
-import { useCallback, useState } from "react";
+"use client";
+
+import { useState } from "react";
 import tw from "twin.macro";
 import { AirportListItem } from "~/components/airport-list-item";
-import { CoordinateSearch } from "~/components/coordinate-search";
+
+import dynamic from "next/dynamic";
+import { BBox } from "~/server/db/airport";
+import type { ViewState } from "../components/map";
 import { trpc } from "../utils/trpc";
 
-const Wrapper = tw.div`w-screen flex flex-col justify-center items-center`;
+const AirportMap = dynamic(() => import("../components/map"), { ssr: false });
 
-const Input = tw.input`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5`;
+const Wrapper = tw.div`w-screen h-screen flex flex-col justify-center items-center relative`;
 
 export default function IndexPage() {
-  const [inputValue, setInputValue] = useState("");
   const [bbox, setBbox] = useState<number[]>([0, 0, 0, 0]);
 
-  const airportResult = trpc.getAirport.useQuery({ code: inputValue });
-
-  const bboxResult = trpc.getAiportsInBBox.useQuery({ bbox });
-
-  const onSearch = useCallback(
-    (distanceKm: number, latY: number, lonX: number) => {
-      const circle = Turf.circle([lonX, latY], distanceKm, {
-        units: "kilometers",
-      });
-
-      const bbox = Turf.bbox(circle);
-
-      setBbox(bbox);
-    },
-    [setBbox]
+  const bboxResult = trpc.getAiportsInBBox.useQuery(
+    { bbox },
+    { keepPreviousData: true }
   );
+
+  const onMapChanged = (state: ViewState & { bbox: BBox }) => {
+    setBbox(state.bbox);
+  };
 
   return (
     <Wrapper>
-      <CoordinateSearch onSearch={onSearch} />
-      <div tw="w-full my-2 border-t-2" />
-      <Input
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-      <div tw="max-w-full grid grid-cols-3 gap-4 mt-4">
-        {airportResult.data ? (
-          <AirportListItem airport={airportResult.data} />
-        ) : (
-          <h1>Loading...</h1>
-        )}
-
-        {bboxResult.data &&
-          bboxResult.data.map((result) => (
-            <AirportListItem
-              key={result.airport_id}
-              airport={result}
-            ></AirportListItem>
-          ))}
+      <div tw="absolute h-auto max-h-[75vh] overflow-y-scroll overflow-x-hidden scroll-m-0 left-0 z-10 bg-white flex flex-col gap-4 p-2">
+        {bboxResult.data?.map((result) => (
+          <AirportListItem
+            key={result.airport_id}
+            airport={result}
+          ></AirportListItem>
+        ))}
+      </div>
+      <div tw="relative w-full grow ">
+        <AirportMap
+          onViewStateChange={onMapChanged}
+          airports={bboxResult.data ?? []}
+        />
       </div>
     </Wrapper>
   );

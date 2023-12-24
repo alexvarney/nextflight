@@ -9,6 +9,10 @@ export const AirportListItem = (props: { airport: Airport }) => {
         <h2 tw="text-2xl">{airport.ident}</h2>
         <p tw="text-lg text-right">{airport.name}</p>
       </div>
+      <p tw="mr-1">
+        {airport.size}
+        {` -`}
+      </p>
       <p>{`${airport.laty.toFixed(4)}, ${airport.lonx.toFixed(4)}`}</p>
       <p tw="flex-auto text-right">{airport.country}</p>
     </div>
