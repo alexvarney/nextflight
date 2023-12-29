@@ -18,7 +18,7 @@ const MOCK_AIRPORT: Airport = {
   laty: 43.46077346801758,
   rating: 1,
   longest_runway_length: 7003,
-  size: "medium",
+  size: 1,
   tower_frequency: 118500,
 };
 

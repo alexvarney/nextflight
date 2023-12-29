@@ -9,25 +9,11 @@ import {
   getAirportByCode,
   getAirportsByBbox,
 } from "~/server/db/airport";
+import { getWaypoint } from "~/server/db/waypoint";
 import { publicProcedure, router } from "~/server/trpc";
 import { createContext } from "~/server/trpc/trpc-context";
 
 const appRouter = router({
-  greeting: publicProcedure
-    // This is the input schema of your procedure
-    // 💡 Tip: Try changing this and see type errors on the client straight away
-    .input(
-      z.object({
-        name: z.string().nullish(),
-      })
-    )
-    .query(({ input }) => {
-      // This is what you're returning to your client
-      return {
-        text: `hello ${input?.name ?? "world"}`,
-        // 💡 Tip: Try adding a new property here and see it propagate to the client straight-away
-      };
-    }),
   getAirport: publicProcedure
     .input(z.object({ code: z.string() }))
     .query(({ input, ctx }) => getAirportByCode(input.code, ctx.db)),
@@ -40,6 +26,9 @@ const appRouter = router({
     .query(({ input, ctx }) => {
       return getAirportsByBbox(input.bbox, ctx.db);
     }),
+  getWaypoint: publicProcedure
+    .input(z.object({ code: z.string() }))
+    .query(({ input, ctx }) => getWaypoint(input.code, ctx.db)),
 });
 
 // export only the type definition of the API
