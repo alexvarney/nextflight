@@ -1,10 +1,12 @@
 import { useState } from "react";
-import tw from "twin.macro";
+import tw, { styled } from "twin.macro";
 import { useRoutes } from "~/hooks/use-route";
 
-const TextArea = tw.textarea`
-  h-20 p-2 rounded-lg border-2 border-gray-300 resize-none flex-grow
-  pointer-events-auto
+const TextArea = styled.textarea`
+  ${tw`h-20 p-2 rounded-lg resize-none flex-grow
+  pointer-events-auto shadow-lg`}
+
+  ${tw`border-slate-700 border-solid border-4 border-opacity-60`}
 `;
 
 export const RoutesInput = () => {

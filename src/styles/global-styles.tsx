@@ -6,6 +6,9 @@ const customStyles = css({
     WebkitTapHighlightColor: theme`colors.purple.500`,
     ...tw`antialiased`,
   },
+  "*": {
+    boxSizing: "border-box",
+  },
 });
 
 const GlobalStyles = () => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { WebMercatorViewport } from "@deck.gl/core/typed";
+import { MapView, WebMercatorViewport } from "@deck.gl/core/typed";
 import DeckGL from "@deck.gl/react/typed";
 import { useCallback, useState } from "react";
 import { useAirportLayer } from "~/components/map/layers/airports";
@@ -45,6 +45,7 @@ export default function AirportMap() {
       viewState={viewState}
       controller={true}
       layers={[basemapLayer, airportLayer, routesLayer]}
+      views={[new MapView({ repeat: true })]}
     />
   );
 }
