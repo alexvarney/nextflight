@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { useAirportLayer } from "~/components/map/layers/airports";
 import { useBasemapLayer } from "~/components/map/layers/base-map";
 import { useRoutesLayer } from "~/components/map/layers/routes";
-import { Airport, BBox } from "~/server/db/airport";
+import { useBboxAirports } from "~/hooks/use-bbox-airports";
 
 const INITIAL_VIEW_STATE = {
   latitude: 44,
@@ -18,12 +18,9 @@ const INITIAL_VIEW_STATE = {
 
 export type ViewState = typeof INITIAL_VIEW_STATE;
 
-interface MapProps {
-  onViewStateChange?: (state: ViewState & { bbox: BBox }) => void;
-  airports: Airport[];
-}
+export default function AirportMap() {
+  const { airports, onMapChanged } = useBboxAirports();
 
-export default function AirportMap(props: MapProps) {
   const [viewState, setViewState] =
     useState<Record<string, any>>(INITIAL_VIEW_STATE);
 
@@ -32,14 +29,14 @@ export default function AirportMap(props: MapProps) {
       const viewport = new WebMercatorViewport(view);
       const bbox = viewport.getBounds();
 
-      props.onViewStateChange?.({ ...view, bbox });
       setViewState(view);
+      onMapChanged({ ...view, bbox });
     },
-    [setViewState, props.onViewStateChange]
+    [setViewState, onMapChanged]
   );
 
   const basemapLayer = useBasemapLayer();
-  const airportLayer = useAirportLayer(props.airports);
+  const airportLayer = useAirportLayer(airports ?? []);
   const routesLayer = useRoutesLayer();
 
   return (
