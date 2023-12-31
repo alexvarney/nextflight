@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MdConnectingAirports, MdHome } from "react-icons/md";
-import tw, { css, styled } from "twin.macro";
+import tw, { styled } from "twin.macro";
+import { IconButton } from "~/components/primitives/button";
 
 const HeaderWrapper = styled.header`
   //base
@@ -13,29 +14,17 @@ const HeaderWrapper = styled.header`
   ${tw`border-slate-900 border-solid border-4 border-opacity-60`}
 
   //colors & text
-  ${tw`bg-gray-200 text-slate-900 fill-white text-base font-semibold`}
-`;
-
-const IconBase = css`
-  ${tw`flex flex-col items-center leading-3 mb-1.5 cursor-pointer gap-1`};
-  & > svg {
-    font-size: 2em;
-  }
-`;
-
-const Icon = styled(Link)`
-  ${IconBase}
+  ${tw`bg-slate-700 `}
 `;
 
 export const Header = () => (
   <HeaderWrapper>
-    <Icon href="/">
-      <MdHome />
-      <span>Home</span>
-    </Icon>
-    <Icon href="/airport">
-      <MdConnectingAirports />
-      <span>Airports</span>
-    </Icon>
+    <Link href="/">
+      <IconButton text={"Home"} icon={<MdHome />} />
+    </Link>
+    <Link href="/airport">
+      <IconButton text={"Airports"} icon={<MdConnectingAirports />} />
+    </Link>
+    <p>Test is this working</p>
   </HeaderWrapper>
 );

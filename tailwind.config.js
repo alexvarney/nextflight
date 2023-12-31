@@ -4,7 +4,12 @@ const plugin = require("tailwindcss/plugin");
 module.exports = {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-amiko)"],
+        mono: ["var(--font-spline-sans-mono)"],
+      },
+    },
   },
   plugins: [
     plugin(({ addUtilities }) =>
