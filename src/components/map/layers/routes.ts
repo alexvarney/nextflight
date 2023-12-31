@@ -41,8 +41,6 @@ export const useRoutesLayer = () => {
     [results]
   );
 
-  console.log(lines, results, waypoints);
-
   return useMemo(
     () =>
       new GeoJsonLayer({

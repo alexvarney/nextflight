@@ -1,30 +1,50 @@
 import Link from "next/link";
-import { MdConnectingAirports, MdHome } from "react-icons/md";
+import { useRouter } from "next/router";
+import {
+  MdConnectingAirports,
+  MdEditCalendar,
+  MdHome,
+  MdSettingsSuggest,
+} from "react-icons/md";
 import tw, { styled } from "twin.macro";
 import { IconButton } from "~/components/primitives/button";
 
 const HeaderWrapper = styled.header`
   //base
-  ${tw`z-10 flex`}
+  ${tw`z-10 flex w-[max-content]`}
 
   //spacing
-  ${tw`p-3 pl-4 m-2 rounded-lg gap-4 shadow-lg`}
-
-  //Border
-  ${tw`border-slate-900 border-solid border-4 border-opacity-60`}
+  ${tw`p-2 m-2 rounded-lg gap-2 shadow-lg`}
 
   //colors & text
   ${tw`bg-slate-700 `}
 `;
 
-export const Header = () => (
-  <HeaderWrapper>
-    <Link href="/">
-      <IconButton text={"Home"} icon={<MdHome />} />
-    </Link>
-    <Link href="/airport">
-      <IconButton text={"Airports"} icon={<MdConnectingAirports />} />
-    </Link>
-    <p>Test is this working</p>
-  </HeaderWrapper>
-);
+export const Header = () => {
+  const { pathname } = useRouter();
+
+  return (
+    <HeaderWrapper>
+      <Link href="/airport">
+        <IconButton
+          dark={pathname != "/airport"}
+          text={"Airports"}
+          icon={<MdHome />}
+        />
+      </Link>
+      <Link href="/route">
+        <IconButton
+          dark={pathname != "/route"}
+          text={"Routes"}
+          icon={<MdConnectingAirports />}
+        />
+      </Link>
+      <IconButton dark text={"Schedule"} icon={<MdEditCalendar />}></IconButton>
+      <IconButton
+        dark
+        text={"Options"}
+        icon={<MdSettingsSuggest />}
+      ></IconButton>
+    </HeaderWrapper>
+  );
+};
