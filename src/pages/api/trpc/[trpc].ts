@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   BBoxSchema,
   getAirportByCode,
+  getAirportRunways,
   getAirportsByBbox,
 } from "~/server/db/airport";
 import { getWaypoint } from "~/server/db/waypoint";
@@ -26,6 +27,9 @@ const appRouter = router({
     .query(({ input, ctx }) => {
       return getAirportsByBbox(input.bbox, ctx.db);
     }),
+  getRunways: publicProcedure
+    .input(z.object({ code: z.string() }))
+    .query(({ input, ctx }) => getAirportRunways(input.code, ctx.db)),
   getWaypoint: publicProcedure
     .input(z.object({ code: z.string() }))
     .query(({ input, ctx }) => getWaypoint(input.code, ctx.db)),

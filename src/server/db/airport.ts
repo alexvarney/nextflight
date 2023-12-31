@@ -98,3 +98,38 @@ export const getAirportsByBbox = (bbox: BBox, db: Database) => {
 
   return AirportArray.parse(results);
 };
+
+const RunwaySchema = z.object({
+  runway_id: z.number(),
+  length: z.number(),
+  width: z.number(),
+  primary_name: z.string(),
+  secondary_name: z.string(),
+});
+
+const RunwayArray = z.array(RunwaySchema);
+
+export type Runway = z.infer<typeof RunwaySchema>;
+
+export const getAirportRunways = (code: string, db: Database) => {
+  const query = db.prepare(`
+    SELECT 
+      runway_id, 
+      length, 
+      width, 
+      primary_end.name AS primary_name, 
+      secondary_end.name AS secondary_name 
+    FROM airport
+	    RIGHT JOIN runway 
+        ON runway.airport_id = airport.airport_id
+	    RIGHT JOIN runway_end primary_end 
+        ON primary_end.runway_end_id = runway.primary_end_id
+	    RIGHT JOIN runway_end secondary_end 
+        ON secondary_end.runway_end_id = runway.secondary_end_id
+    WHERE LOWER(airport.ident) = ?
+    `);
+
+  const results = query.all(code.toLowerCase());
+
+  return RunwayArray.parse(results);
+};
