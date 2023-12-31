@@ -5,7 +5,7 @@ import { trpc } from "~/utils/trpc";
 export const AirportListItem = (props: { airport: Airport }) => {
   const { airport } = props;
 
-  const [shouldQuery, setShouldQuery] = useState(true);
+  const [shouldQuery, setShouldQuery] = useState(false);
 
   const runways = trpc.getRunways.useQuery(
     { code: airport.ident },
