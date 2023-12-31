@@ -11,10 +11,10 @@ import { IconButton } from "~/components/primitives/button";
 
 const HeaderWrapper = styled.header`
   //base
-  ${tw`z-10 flex w-[max-content]`}
+  ${tw`z-10 flex w-full`}
 
   //spacing
-  ${tw`p-2 m-2 rounded-lg gap-2 shadow-lg`}
+  ${tw`p-2 rounded-lg shadow-lg justify-between`}
 
   //colors & text
   ${tw`bg-slate-700 `}

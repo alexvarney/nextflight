@@ -1,20 +1,13 @@
 import tw from "twin.macro";
 import { AirportListItem } from "~/components/airport-list-item";
-import { GridLayout } from "~/components/primitives/grid-layout";
+import { PanelLayout } from "~/components/primitives/panel-layout";
 import { useBboxAirports } from "~/hooks/use-bbox-airports";
 
 export default function AiportPage() {
   const { airports } = useBboxAirports();
   return (
-    <GridLayout>
-      <div
-        css={[
-          tw`[grid-area:left] overflow-y-auto overflow-x-hidden scrollbar-hide scroll-m-0 pointer-events-auto`,
-          tw`flex flex-col gap-4 p-2`,
-          tw`bg-gray-200 rounded-lg`,
-          tw`border-slate-700 border-solid border-4 border-opacity-60`,
-        ]}
-      >
+    <PanelLayout>
+      <div css={tw`flex flex-col gap-2 pl-2 pr-2`}>
         {airports?.map((result) => (
           <AirportListItem
             key={result.airport_id}
@@ -22,6 +15,6 @@ export default function AiportPage() {
           ></AirportListItem>
         ))}
       </div>
-    </GridLayout>
+    </PanelLayout>
   );
 }

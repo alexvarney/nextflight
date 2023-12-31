@@ -28,7 +28,7 @@ export const AirportListItem = (props: { airport: Airport }) => {
 
   return (
     <div
-      tw="flex flex-wrap min-h-20 p-2 border-2 border-gray-300 text-gray-900 rounded-lg min-w-64 bg-white"
+      tw="flex flex-wrap min-h-20 p-2 text-gray-900 rounded-lg min-w-64 bg-gray-100"
       onClick={handleClick}
     >
       <div tw="flex w-full mb-1 justify-between gap-4">

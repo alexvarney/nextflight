@@ -2,7 +2,6 @@ import type { AppType } from "next/app";
 import dynamic from "next/dynamic";
 import { Amiko, Spline_Sans_Mono } from "next/font/google";
 import tw from "twin.macro";
-import { Header } from "~/components/header";
 import GlobalStyles from "~/styles/global-styles";
 import { Providers } from "~/utils/providers";
 import { trpc } from "../utils/trpc";
@@ -30,7 +29,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <Providers>
       <GlobalStyles />
       <Wrapper className={`${splineSansMono.variable} ${amiko.variable}`}>
-        <Header />
         <Component {...pageProps} />
         <AirportMap />
       </Wrapper>
