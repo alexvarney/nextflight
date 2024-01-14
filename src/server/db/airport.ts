@@ -120,12 +120,12 @@ export const getAirportRunways = (code: string, db: Database) => {
       primary_end.name AS primary_name, 
       secondary_end.name AS secondary_name 
     FROM airport
-	    RIGHT JOIN runway 
-        ON runway.airport_id = airport.airport_id
-	    RIGHT JOIN runway_end primary_end 
-        ON primary_end.runway_end_id = runway.primary_end_id
-	    RIGHT JOIN runway_end secondary_end 
-        ON secondary_end.runway_end_id = runway.secondary_end_id
+    RIGHT JOIN runway 
+      ON runway.airport_id = airport.airport_id
+    RIGHT JOIN runway_end primary_end 
+      ON primary_end.runway_end_id = runway.primary_end_id
+    RIGHT JOIN runway_end secondary_end 
+      ON secondary_end.runway_end_id = runway.secondary_end_id
     WHERE LOWER(airport.ident) = ?
     `);
 

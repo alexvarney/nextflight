@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "twin.macro";
+import tw from "twin.macro";
 import { Airport } from "~/server/db/airport";
 import { trpc } from "~/utils/trpc";
 export const AirportListItem = (props: { airport: Airport }) => {
@@ -26,21 +26,29 @@ export const AirportListItem = (props: { airport: Airport }) => {
     }
   }, [runways.status]);
 
+  const hasTower = airport.tower_frequency != null;
+
   return (
-    <div
-      tw="flex flex-wrap min-h-20 p-2 text-gray-900 rounded-lg min-w-64 bg-gray-100"
-      onClick={handleClick}
-    >
-      <div tw="flex w-full mb-1 justify-between gap-4">
-        <h2 tw="text-xl font-bold">{airport.ident}</h2>
-        <p tw="text-lg text-right">{airport.name}</p>
+    <div tw="rounded-lg min-w-6 bg-gray-100 p-2">
+      <div
+        css={[
+          tw`flex flex-col gap-3 py-1 pl-4 pr-2 text-slate-700 w-full relative before:content-[_] before:absolute before:w-1.5 before:h-full before:bg-fuchsia-800 before:opacity-50 before:rounded-lg before:top-0 before:left-0`,
+          hasTower && tw`before:bg-cyan-800`,
+        ]}
+        onClick={handleClick}
+      >
+        <div tw="flex w-full justify-between gap-4 items-baseline">
+          <p tw="basis-3/4 text-lg font-bold leading-6">{airport.name}</p>
+          <p tw="basis-1/4 text-lg text-right">{airport.country}</p>
+        </div>
+        <div tw="flex w-full justify-between gap-4">
+          <p tw="text-3xl font-bold m-0 leading-6">{airport.ident}</p>
+          <p tw="text-lg text-zinc-500 font-semibold m-0 leading-6">
+            {Intl.NumberFormat("en-US").format(airport.longest_runway_length)}{" "}
+            ft
+          </p>
+        </div>
       </div>
-      <p tw="mr-1">
-        {airport.size}
-        {` -`}
-      </p>
-      <p>{`${airport.longest_runway_length}ft`}</p>
-      <p tw="flex-auto text-right">{airport.country}</p>
     </div>
   );
 };

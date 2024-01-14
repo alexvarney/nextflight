@@ -12,7 +12,10 @@ const customStyles = [
     },
   }),
   css`
-    font-family: var(--font-amiko);
+    * {
+      font-family: var(--font-amiko);
+      letter-spacing: -0.03em;
+    }
   `,
   // css`
   //   @import url("https://fonts.googleapis.com/css2?family=Amiko:wght@400;600;700&family=Spline+Sans+Mono:wght@300;400;500;600;700&display=swap");

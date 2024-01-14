@@ -5,8 +5,6 @@ import { useRoutes } from "~/hooks/use-route";
 const TextArea = styled.textarea`
   ${tw`h-20 p-2 rounded-lg resize-none flex-grow
   pointer-events-auto shadow-lg`}
-
-  ${tw`border-slate-700 border-solid border-4 border-opacity-60`}
 `;
 
 export const RoutesInput = () => {

@@ -7,7 +7,7 @@ export default function AiportPage() {
   const { airports } = useBboxAirports();
   return (
     <PanelLayout>
-      <div css={tw`flex flex-col gap-2 pl-2 pr-2`}>
+      <div css={tw`flex flex-col gap-3 px-3 pb-3`}>
         {airports?.map((result) => (
           <AirportListItem
             key={result.airport_id}
