@@ -13,7 +13,6 @@ const customStyles = [
   }),
   css`
     * {
-      font-family: var(--font-amiko);
       letter-spacing: -0.03em;
     }
   `,

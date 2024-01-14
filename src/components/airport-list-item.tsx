@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import tw from "twin.macro";
+import { AccentBar } from "~/components/primitives/accent-bar";
 import { Airport } from "~/server/db/airport";
 import { trpc } from "~/utils/trpc";
 export const AirportListItem = (props: { airport: Airport }) => {
@@ -30,10 +31,10 @@ export const AirportListItem = (props: { airport: Airport }) => {
 
   return (
     <div tw="rounded-lg min-w-6 bg-gray-100 p-2">
-      <div
+      <AccentBar
         css={[
-          tw`flex flex-col gap-3 py-1 pl-4 pr-2 text-slate-700 w-full relative before:content-[_] before:absolute before:w-1.5 before:h-full before:bg-fuchsia-800 before:opacity-50 before:rounded-lg before:top-0 before:left-0`,
-          hasTower && tw`before:bg-cyan-800`,
+          tw`flex flex-col gap-3 py-1 pl-4 pr-2 text-slate-700 w-full `,
+          hasTower ? tw`before:bg-cyan-800` : tw`before:bg-fuchsia-800`,
         ]}
         onClick={handleClick}
       >
@@ -48,7 +49,7 @@ export const AirportListItem = (props: { airport: Airport }) => {
             ft
           </p>
         </div>
-      </div>
+      </AccentBar>
     </div>
   );
 };
